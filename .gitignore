@@ -1,0 +1,13 @@
+/api/node_modules
+/api/uploads
+/api/build
+
+
+/backend/node_modules
+/backend/build
+/backend/coverage
+
+/frontend/node_modules
+/frontend/build
+/frontend/coverage
+/frontend/public

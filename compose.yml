@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  frontend:
+    depends_on:
+      - api
+
+    build: ./frontend
+
+    ports:
+      - 3000:3000
+
+    environment:
+      API_URL: http://localhost:5000
+
+    develop:
+      watch:
+        - path: ./frontend/package.json
+          action: rebuild
+        - path: ./frontend/package-lock.json
+          action: rebuild 
+
+        - path: ./frontend
+          target: /app
+          action: sync
+
+  backend:
+    depends_on:
+      - api
+
+    build: ./backend
+
+    ports:
+      - 4000:4000
+
+    environment:
+      API_URL: http://localhost:5000
+
+    develop:
+      watch:
+        - path: ./backend/package.json
+          action: rebuild
+        - path: ./backend/package-lock.json
+          action: rebuild 
+
+        - path: ./backend
+          target: /app
+          action: sync
+
+  api:
+    depends_on:
+      - db
+
+    build: ./api
+
+    ports:
+      - 5000:5000
+
+    environment:
+      MONGO_URI: mongodb://db/kosheli_store
+      APP_NAME: api
+      NODE_ENV: dev
+      FRONTEND_URL: http://localhost:3000
+      BACKEND_URL: http://localhost:4000
+
+    develop:
+      watch:
+        - path: ./api/package.json
+          action: rebuild
+        - path: ./api/package-lock.json
+          action: rebuild 
+
+        - path: ./api
+          target: /app
+          action: sync
+
+  db:
+    image: mongo:latest
+
+    ports:
+      - 27017:27017
+
+    volumes:
+      - kosheli:/data/db
+
+
+volumes:
+  kosheli:
